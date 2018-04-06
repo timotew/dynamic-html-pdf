@@ -27,6 +27,19 @@ module.exports.create = (document, options) => {
         if (document.type !== 'buffer' && !document.path) {
             reject(new Error("Please provide path parameter to save file or if you want buffer as output give parameter type = 'buffer'"));
         }
+        
+        Handlebars.registerHelper('math', function(lvalue, operator, rvalue, options) {
+           lvalue = parseFloat(lvalue);
+           rvalue = parseFloat(rvalue);
+
+           return {
+              '+': lvalue + rvalue,
+              '-': lvalue - rvalue,
+              '*': lvalue * rvalue,
+              '/': lvalue / rvalue,
+              '%': lvalue % rvalue
+            }[operator];
+         });
 
         var html = Handlebars.compile(document.template)(document.context);
         var pdfPromise = pdf.create(html, options);
